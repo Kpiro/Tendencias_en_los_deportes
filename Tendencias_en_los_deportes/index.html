@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Deportes en Olimpiadas</title>
+
+    <link rel="icon" href="data/Music_29918.ico" type="ico">
+    <link rel="stylesheet" href="style.css">
+
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="docs/images/favicon.ico"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="http://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+    <script src="js/leaflet-providers.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    
+    <style>
+      .leaflet-container {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <style>
+      #map {
+        width: 700px;
+        height: 400px;
+      }
+      .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+      }
+      .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+      }
+      .legend {
+        text-align: left;
+        line-height: 18px;
+        color: #555;
+      }
+      .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container0">
+      <div class="Title">
+      <h1>Tendencias en los deportes</h1>
+      </div>
+      <img class="img0" src="data/img0.jpg" alt="Italian Trulli">
+     
+    </div>
+
+    <div class="cont">
+      La historia de las olimpiadas viene de la antigüedad griega, cerca del siglo VIII a.C. De hecho, su nombre es así porque se celebraban para rendirle honor a los dioses del Panteón Olímpico.
+      En este evento se realizaban fiestas deportivas donde se reunían los luchadores griegos en distintas competencias. Eran tan importantes que incluso las guerras entre ciudades y reinos se pausaban durante esos días.
+      <br>
+      <br>
+      Los primeros Juegos Olímpicos de la era moderna se celebraron en Atenas en 1896, con 14 países y 241 deportistas.
+      Desde ahí ha sido una tradición y sólo se ha pausado en 1916, 1940 y 1944, debido a las guerras mundiales que tuvieron lugar durante esos periodos.
+      A continuación, se presenta un detallado análisis de los países que más se destacan en determinados deportes. Para facilitar el trabajo con los datos, solo se han tomado los deportes que son considerados de equipos, ya que en los deportes individuales se dificulta la determinación de la posición de un país en dicho deporte. 
+      <br>
+      <br>
+      Para mejor comprensión, se muestra el siguiente mapa, donde, dada la escala de colores, se puede saber cómo fue el desempeño de los diferentes países en cada deporte en cada una de las ediciones de los Juegos Olímpicos de Veranos.
+    </div>
+
+    <section>
+      <div class="centered-content">
+        <div class="graph-text main-text">
+          <h2 class="oracion">
+            Mapa sobre la actuación de los países en los diferentes deportes
+          </h2> 
+        </div>
+  
+        <div>
+          <div>
+            <span>Deportes:&nbsp;</span>
+            <select id="sportSelect" onchange="MergeCountries()">
+              <option value="null"></option>
+              <option value="Rugby">Rugby</option>
+              <option value="Handball">Balonmano</option>
+              <option value="Baseball">Béisbol</option>
+              <option value="Basketball">Baloncesto</option>
+              <option value="Roller Hockey">Hockey sobre patines</option>
+              <option value="Beach Volleyball">Voleibol de playa</option>
+              <option value="Hockey">Hockey</option>
+              <option value="Football">Fútbol</option>
+              <option value="Volleyball">Voleibol de sala</option>
+              <option value="Water Polo">Polo acuático</option>
+              <option value="Rugby Sevens">Rugby 7</option>
+              <option value="Softball">Softball</option>
+              <option value="Polo">Polo</option>
+              <option value="Ice Hockey">Hockey sobre hielo</option>
+              <option value="3x3 Basketball">Baloncesto 3x3</option>
+              <option value="Lacrosse">Lacrosse</option>
+              <option value="American Football">Fútbol americano</option>
+              <option value="Cricket">Cricket</option>
+            </select>
+  
+            <span>Edición:&nbsp;</span>
+            <select id="editionSelect" onchange="MergeCountries()">
+              <option value="null"></option>
+            </select>
+  
+            <span>Categoría:&nbsp;</span>
+            <select id="categorySelect" onchange="MergeCountries()">
+              <option value="null"></option>
+              <option value="Female">Femenina</option>
+              <option value="Male">Masculina</option>
+            </select>
+          </div>
+        </div>
+  
+        
+  
+      <div id="map"></div>
+    </section>
+    
+    <section>
+      <div  class = "cont">
+        Dada la siguiente gráfica, es posible visualizar con mayor claridad, el desempeño de un país en un deporte a través de los años en los Juegos Olímpicos. Si su desempeño ha mejorado, empeorado, o simplemente, si se ha mantenido. 
+      </div>
+    </section>
+
+    <!-- Graphics -->
+    <section class="graphic">
+
+      <div class="select">
+
+        <div>
+          <span>País:&nbsp;</span> 
+          <select id="line_country"></select>
+        </div>
+        
+        <div>
+          <span>Deporte:&nbsp;</span> 
+          <select id="line_sport">
+            <option value="Rugby">Rugby</option>
+            <option value="Handball">Balonmano</option>
+            <option value="Baseball">Béisbol</option>
+            <option value="Basketball">Baloncesto</option>
+            <option value="Roller Hockey">Hockey sobre patines</option>
+            <option value="Beach Volleyball">Voleibol de playa</option>
+            <option value="Hockey">Hockey</option>
+            <option value="Football">Fútbol</option>
+            <option value="Volleyball">Voleibol de sala</option>
+            <option value="Water Polo">Polo acuático</option>
+            <option value="Rugby Sevens">Rugby 7</option>
+            <option value="Softball">Softball</option>
+            <option value="Polo">Polo</option>
+            <option value="Ice Hockey">Hockey sobre hielo</option>
+            <option value="3x3 Basketball">Baloncesto 3x3</option>
+            <option value="Lacrosse">Lacrosse</option>
+            <option value="American Football">Fútbol americano</option>
+            <option value="Cricket">Cricket</option>
+          </select>
+        </div>
+
+        <div>
+          <span>Género:&nbsp;</span> 
+          <select id="line_gender">
+            <option value="Female">Mujer</option>
+            <option value="Male">Hombre</option>
+          </select>
+        </div>
+        
+      </div>
+
+      <canvas id="line_graph"></canvas>
+    
+    </section>
+
+    <section>
+      <div>
+        Es posible arribar a determinadas conclusiones por cada deporte. 
+<br>
+<br>
+En el rugby masculino, hasta la fecha, Francia ha ganado un total de 3 medallas: una de oro y dos de plata, en cinco partidos jugados 1.
+<br>
+<br>
+El béisbol ha sido disputado extraoficialmente desde 1904, desde entonces en 12 olimpiadas como deporte de exhibición. En total han participado 17 países, de los cuatro torneos olímpicos donde se entregaron medallas, entre los cuales se destacan Cuba, y Japón, que han aparecido en todos los torneos. También es notable Estados Unidos, ganador de los últimos Juegos Olímpicos.
+<br>
+<br>
+El baloncesto masculino ha sido un deporte olímpico desde los Juegos Olímpicos de Berlín 1936. Desde entonces, la selección de Estados Unidos ha sido el equipo más exitoso en la historia del baloncesto olímpico, habiendo ganado 16 medallas de oro en 18 ediciones. 
+<br>
+<br>
+Los países con mejores resultados en hockey masculino en los Juegos Olímpicos de Verano son India, con 8 medallas de oro, Alemania con 4 y Pakistán con 3. 
+<br>
+<br>
+
+Los países con mejores resultados en fútbol masculino en los Juegos Olímpicos de Verano son Brasil, Hungría, Yugoslavia y Rusia. Brasil lidera la tabla con seis medallas en total, seguido por Hungría, que ganó tres medallas de oro. Yugoslavia y Rusia ganaron una medalla de oro cada uno.
+<br>
+<br>
+
+El voleibol de sala masculino se ha incluido en los Juegos Olímpicos de Verano desde 1964. En cuanto a los países con mejores resultados, Brasil, la Unión Soviética y los Estados Unidos lideran la tabla con tres medallas de oro cada uno.
+<br>
+<br>
+
+Los países que han obtenido más medallas en baloncesto femenino son Estados Unidos, Australia y Brasil 1. Estados Unidos ha ganado un total de 10 medallas de oro, 1 medalla de plata y 2 medallas de bronce.
+<br>
+<br>
+
+
+
+El vóley playa femenino es un deporte olímpico popular. En los Juegos Olímpicos de Verano, los países que han obtenido más medallas en vóley playa femenino son Estados Unidos, Australia y Brasil.
+<br>
+<br>
+En los Juegos Olímpicos de Verano, los países que han obtenido más medallas en fútbol femenino son Estados Unidos, Brasil y Noruega 1. Estados Unidos ha ganado un total de 4 medallas de oro, 1 medalla de plata y 1 medalla de bronce en fútbol femenino 1. Brasil ha ganado 2 medallas de plata y 1 medalla de bronce en fútbol femenino 1.
+<br>
+<br>
+Los países con mejores resultados en el softball femenino son Estados Unidos, Japón y Australia.
+ 
+
+      </div>
+    </section>
+    
+    <script type="module" src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="text/javascript" src="countries.js"></script>
+
+    <script type="text/javascript">
+      const map = L.map("map").setView([20, -20], 1);
+      const jsonData = getData();
+      async function getData() {
+        const data = await $.getJSON('data/data.json');
+        return data;
+      }
+
+      const info = L.control();
+
+      info.onAdd = function (map) {
+        this._div = L.DomUtil.create("div", "info");
+        this.update();
+        return this._div;
+      };
+      
+      let activeCountries = [];
+      let intermediateCountries = [];
+      let participantCountries = [];
+      info.update = function () {}
+
+      info.addTo(map);
+
+      const tiles = L.tileLayer("Thunderforest.Transport", {
+        maxZoom: 20,
+        attribution:
+          '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>',
+      }).addTo(map);
+
+      const filterSport = document.getElementById("sportSelect");
+      const filterEdition = document.getElementById("editionSelect");
+      const filterCategory = document.getElementById("categorySelect");
+
+      function getColor(id) {
+        if(activeCountries.includes(id))
+        {
+          if(filterCategory.value == "null") return "#00CD00";
+          if(filterCategory.value == "Female") return "#FF69B4";
+          if(filterCategory.value == "Male") return "#0000FF";
+        }
+        else if(intermediateCountries.includes(id))
+        {
+          if(filterCategory.value == "null") return  "#00CD00";
+          if(filterCategory.value == "Female") return "#FFA8D9";
+          if(filterCategory.value == "Male") return "#ADD8E6";
+        }
+        else if(participantCountries.includes(id))
+        {
+          if(filterCategory.value == "null") return "#00CD00";
+          if(filterCategory.value == "Female") return "#FFE0FF";
+          if(filterCategory.value == "Male") return "#CCFFFF";
+        }
+         
+        return "#FDFAD2";
+      }
+
+      function style(feature) {
+        console.log("style");
+        return {
+          weight: 2,
+          opacity: 1,
+          color: "white",
+          dashArray: "3",
+          fillOpacity: 0.7,
+          fillColor: getColor(feature.id),
+        };
+      }
+
+      function highlightFeature(e) {
+        const layer = e.target;
+
+        layer.setStyle({
+          weight: 5,
+          color: "#666",
+          dashArray: "",
+          fillOpacity: 0.7,
+        });
+
+        layer.bringToFront();
+
+      }
+
+      const geojson = L.geoJson(countriesData, {
+        style,
+        onEachFeature,
+      }).addTo(map);
+
+      geojson.eachLayer(function (layer) {
+        layer.bindPopup(layer.feature.properties.name);
+      });
+
+      function resetHighlight(e) {
+        geojson.resetStyle(e.target);
+      }
+
+      async function zoomToFeature(e) {
+        var layer = e.target;
+        map.fitBounds(layer.getBounds());
+        var popupContent = layer.feature.properties.name;
+        layer.bindPopup(popupContent).openPopup();
+      }
+
+      function onEachFeature(feature, layer) {
+        layer.on({
+          mouseover: highlightFeature,
+          mouseout: resetHighlight,
+          click: zoomToFeature,
+        });
+      }
+
+      map.attributionControl.addAttribution(
+        '<a href="http://metodologia.cu/">Fuentes</a>'
+      );
+
+        var tonga = L.marker([-20.54838, -175.40676]).bindPopup("Tonga");
+        var barein = L.marker([26.16835, 50.52564]).bindPopup("Barein");
+        var samoa = L.marker([-13.85302, -172.05893]).bindPopup("Somoa");
+        var hkong = L.marker([22.55581, 114.22982]).bindPopup("Hong Kong");
+        var cabo = L.marker( [14.90082429, -24.70433509]).bindPopup("Cabo Verde");
+        var gbr = L.marker( [55.738709,-2.117615],).bindPopup("Gran Bretaña");
+          //hide for now
+        map.removeLayer(tonga);
+        map.removeLayer(barein);
+        map.removeLayer(samoa);
+        map.removeLayer(hkong);
+
+      function updateMap() {
+        activeCountries = Array.from(new Set(activeCountries));
+        intermediateCountries = Array.from(new Set(intermediateCountries));
+        participantCountries = Array.from(new Set(participantCountries));
+        info.update();
+        //little countries
+        const countryLayers = {
+          'cpv': cabo,
+          'tga': tonga,
+          'mas': barein,
+          'sam': samoa,
+          'hkg': hkong,
+          'gbr': gbr
+        };
+
+        Object.keys(countryLayers).forEach(countryCode => {
+          const layer = countryLayers[countryCode];
+          if (activeCountries.includes(countryCode) && intermediateCountries.includes(countryCode) && participantCountries.includes(countryCode)) {
+            layer.addTo(map);
+          } else {
+            map.removeLayer(layer);
+          }
+        });
+
+        if (activeCountries.includes('gbr'))
+        {
+          const coiGBR = ['eng', 'sco', 'wal', 'irn'];
+          activeCountries = activeCountries.concat(coiGBR);
+        }
+        else if (intermediateCountries.includes('gbr'))
+        {
+          const coiGBR = ['eng', 'sco', 'wal', 'irn'];
+          intermediateCountries = intermediateCountries.concat(coiGBR);
+        }
+        else if (participantCountries.includes('gbr'))
+        {
+          const coiGBR = ['eng', 'sco', 'wal', 'irn'];
+          participantCountries = participantCountries.concat(coiGBR);
+        }
+      
+        geojson.eachLayer(function (layer) {
+        const id = layer.feature.id;
+        layer.setStyle({fillColor: getColor(id)});
+        geojson.addTo(map);
+        });
+      }
+
+      async function getCountriesScale () {
+        
+        const response = await fetch('data/data.json');
+        const data = await response.json();
+        
+        // Agregar las opciones al elemento select
+        data.forEach(function(item) {
+          if (item.sport == filterSport.value && item.year == filterEdition.value && item.sex == filterCategory.value) {
+            
+            if (1 <= item.pos && item.pos <= 3) {
+              activeCountries.push(item.country_noc.toLowerCase());
+            } else if (4 <= item.pos && item.pos <= 10) {
+              intermediateCountries.push(item.country_noc.toLowerCase());
+            } else if (item.pos > 10) {
+              participantCountries.push(item.country_noc.toLowerCase());
+            }
+          }
+        });
+      }
+
+      async function MergeCountries()
+      {
+        if (filterSport.value != "null" && filterEdition.value != "null" && filterCategory.value != "null") {
+          activeCountries.length = 0;
+          intermediateCountries.length = 0;
+          participantCountries.length = 0;
+          await getCountriesScale();  
+          updateMap();
+        }
+        
+      }
+
+    </script>
+
+    <script>
+      // Obtener el elemento select
+      var select = document.getElementById("editionSelect");
+
+      // Leer el archivo JSON
+      fetch('data/editions.json')
+        .then(response => response.json())
+        .then(data => {
+          // Agregar las opciones al elemento select
+          data.forEach(function(edition) {
+            var option = document.createElement('option');
+            option.text = edition.edition;
+            option.value = edition.year;
+            select.add(option);
+          });
+        });
+    </script> 
+  </body>
+</html>
